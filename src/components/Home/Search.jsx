@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import RecipeList from './RecipeList';
 import FormControl from 'react-bootstrap/FormControl';
 
-function Search({ recipes, deleteRecipe, createRecipe }) {
+function Search({ recipes, deleteRecipe }) {
 
     const [searchField, setSearchField] = useState("");
 

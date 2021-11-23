@@ -1,6 +1,3 @@
-import { useEffect, useState } from 'react'
-import Base64 from 'Base64'
-import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom'
 
 
@@ -13,7 +10,7 @@ import Button from 'react-bootstrap/Button';
 function Home({ recipes, setRecipes }) {
 
     const deleteRecipe = (id) => {
-        setRecipes(recipes.filter(recipe => recipe.id != id))
+        setRecipes(recipes.filter(recipe => recipe.id !== id))
     }
 
     const noRecipeView = (
@@ -27,14 +24,28 @@ function Home({ recipes, setRecipes }) {
                 Seems like you have no recipes! Try creating one below...
             </Alert>
             <Link to="/create">
-
                 <Button>New Recipe</Button>
             </Link>
         </div >
     )
 
     const recipeList = (
-        <Search deleteRecipe={deleteRecipe} recipes={recipes}></Search>
+        <>
+            <div
+                style={{
+                    width: '75%',
+                    margin: `10px auto 10px auto`,
+                    display: 'block'
+                }}>
+
+                <div style={{ display: 'flex', marginTop: "30px", justifyContent: 'center', alignItems: 'center' }}>
+                    <img src='./logo1024.png' width='64px' height='64px' />
+                    <h1 style={{ textAlign: 'center' }}>The Cookbook</h1>
+                    <img src='./logo1024.png' width='64px' height='64px' />
+                </div>
+            </div>
+            <Search deleteRecipe={deleteRecipe} recipes={recipes}></Search>
+        </>
     )
 
     return (

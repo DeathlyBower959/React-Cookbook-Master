@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import RecipeList from './RecipeList';
+import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
+import { Link } from 'react-router-dom'
+
 
 function Search({ recipes, deleteRecipe }) {
 
@@ -27,21 +30,34 @@ function Search({ recipes, deleteRecipe }) {
                 position: 'absolute', left: '50%',
                 transform: 'translate(-50%)',
                 width: "75%",
-                marginTop: "30px"
+                marginTop: "15px"
             }}>
-            <h1 style={{ textAlign: 'center' }}>The Cookbook</h1>
-            <FormControl
-                placeholder="Search Recipes"
-                aria-label="Search Recipes"
-                onChange={handleChange}
-            />
+
+            <div style={{
+                width: '100%',
+                margin: `10px auto 10px auto`,
+                display: 'flex'
+            }}>
+
+                <FormControl
+                    placeholder="Search Recipes"
+                    aria-label="Search Recipes"
+                    onChange={handleChange}
+                />
+                <Link to='/create'>
+                    <Button style={{ marginLeft: '10px' }}>New</Button>
+                </Link>
+            </div>
+
+
             <div
                 style={{
                     position: 'absolute', left: '50%',
                     transform: 'translate(-50%)',
-                    width: "75%"
+                    width: "75%",
+                    marginTop: '10px'
                 }}>
-                <RecipeList filteredRecipes={filteredRecipes} deleteRecipe={deleteRecipe}/>
+                <RecipeList filteredRecipes={filteredRecipes} deleteRecipe={deleteRecipe} />
             </div>
         </div>
     );

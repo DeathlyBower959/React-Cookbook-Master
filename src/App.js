@@ -20,8 +20,23 @@ function App() {
   const deleteRecipe = (id) => {
     setRecipes(recipes.filter(recipe => recipe.id != id))
   }
+  //Branch Testing
 
-  const noRecipe = (
+  const noRecipeView = (
+    <div
+      style={{
+        position: 'absolute', left: '50%', top: '50%',
+        transform: 'translate(-50%, -50%)'
+      }}>
+      <Alert variant="danger">
+        <Alert.Heading>Hmm...</Alert.Heading>
+        Seems like you have no recipes! Try creating one below...
+      </Alert>
+      <Button onClick={createRecipe}>New Recipe</Button>
+    </div >
+  )
+
+  const createRecipeView = (
     <div
       style={{
         position: 'absolute', left: '50%', top: '50%',
@@ -40,7 +55,7 @@ function App() {
   )
 
   return (
-    recipes.length === 0 ? noRecipe : recipeList
+    recipes.length === 0 ? noRecipeView : recipeList
   );
 }
 

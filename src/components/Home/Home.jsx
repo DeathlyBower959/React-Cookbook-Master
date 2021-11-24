@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom'
 
 import '../../css/Globals.css'
@@ -9,6 +9,7 @@ import React from 'react'
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
@@ -19,12 +20,21 @@ function Home({ recipes, setRecipes }) {
     const [editName, setEditName] = useState(false)
     const [name, setName] = useLocalStorage('cookbook_name', 'The Cookbook')
 
+    const [modalTitle, setModalTitle] = useState('Hmm...')
+
+    const [show, setShow] = useState(false)
+
+    let gId = null;
+    let recipeInfo;
     const deleteRecipe = (id) => {
-        if (window.confirm("Are you sure you want to delete this recipe?"))
-            setRecipes(recipes.filter(recipe => recipe.id !== id))
+        gId = id
+        recipeInfo = recipes.find(recipe => recipe.id == gId)
+        setModalTitle(recipeInfo?.name || 'Hmm...')
+        setShow(true)
     }
 
-      
+
+
     const renderTooltip = props => (
         <Tooltip {...props}>Double click me to rename!</Tooltip>
     );
@@ -43,6 +53,21 @@ function Home({ recipes, setRecipes }) {
 
     const recipeList = (
         <>
+            <Modal show={show} onHide={() => setShow(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{modalTitle}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>{`Are you sure you want to discard ${gId == null || gId == undefined ? 'this recipe' : 'your changes'}?`}</Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShow(false)}>
+                        Cancel
+                    </Button>
+                    <Button variant="primary" onClick={() => setRecipes(recipes.filter(recipe => recipe.id !== gId))}>
+                        Yes
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
             <div
                 style={{
                     width: '75%',

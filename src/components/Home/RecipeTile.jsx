@@ -36,13 +36,12 @@ const RecipeTile = ({ recipe, deleteRecipe }) => {
                                     <Button style={{ margin: '5px' }}>Edit</Button>
                                 </NavLink>
                                 <Button style={{ margin: '5px' }} variant="danger" onClick={() => deleteRecipe(id)}>Delete</Button>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
+            </div >
     );
 }
 

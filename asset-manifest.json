@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/react-cookbook-master/static/css/main.a821cd19.chunk.css",
+    "main.js": "/react-cookbook-master/static/js/main.7c7ee5aa.chunk.js",
+    "main.js.map": "/react-cookbook-master/static/js/main.7c7ee5aa.chunk.js.map",
+    "runtime-main.js": "/react-cookbook-master/static/js/runtime-main.f01734e5.js",
+    "runtime-main.js.map": "/react-cookbook-master/static/js/runtime-main.f01734e5.js.map",
+    "static/css/2.383c0125.chunk.css": "/react-cookbook-master/static/css/2.383c0125.chunk.css",
+    "static/js/2.0963fb0d.chunk.js": "/react-cookbook-master/static/js/2.0963fb0d.chunk.js",
+    "static/js/2.0963fb0d.chunk.js.map": "/react-cookbook-master/static/js/2.0963fb0d.chunk.js.map",
+    "index.html": "/react-cookbook-master/index.html",
+    "static/css/2.383c0125.chunk.css.map": "/react-cookbook-master/static/css/2.383c0125.chunk.css.map",
+    "static/css/main.a821cd19.chunk.css.map": "/react-cookbook-master/static/css/main.a821cd19.chunk.css.map",
+    "static/js/2.0963fb0d.chunk.js.LICENSE.txt": "/react-cookbook-master/static/js/2.0963fb0d.chunk.js.LICENSE.txt",
+    "static/media/logo1024.983d1827.png": "/react-cookbook-master/static/media/logo1024.983d1827.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f01734e5.js",
+    "static/css/2.383c0125.chunk.css",
+    "static/js/2.0963fb0d.chunk.js",
+    "static/css/main.a821cd19.chunk.css",
+    "static/js/main.7c7ee5aa.chunk.js"
+  ]
+}

@@ -15,9 +15,12 @@ const App = () => {
     <Router>
       <Routes>
         <Route path="/" exact element={<Home recipes={recipes} setRecipes={setRecipes} />} />
+
         <Route path="/create" exact element={<CreateRecipe recipes={recipes} setRecipes={setRecipes} />} />
-        <Route path="/create/:id" element={<CreateRecipe recipes={recipes} setRecipes={setRecipes} edit={true} />} />
-        <Route path="/recipe/:id" element={<Recipe />} />
+        <Route path="/edit/:id" element={<CreateRecipe recipes={recipes} setRecipes={setRecipes} />} />
+
+        <Route path="/recipe" exact element={<Recipe recipes={recipes}/>} />
+        <Route path="/recipe/:id" element={<Recipe recipes={recipes}/>} />
       </Routes>
     </Router>
   )

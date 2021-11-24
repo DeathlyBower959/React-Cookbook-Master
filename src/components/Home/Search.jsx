@@ -3,11 +3,13 @@ import RecipeList from './RecipeList';
 import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import { Link } from 'react-router-dom'
+import { Form } from 'react-bootstrap';
 
 
 function Search({ recipes, deleteRecipe }) {
 
     const [searchField, setSearchField] = useState("");
+    const [tagField, setTagField] = useState("none");
 
     const filteredRecipes = recipes.filter(
         recipe => {
@@ -15,23 +17,35 @@ function Search({ recipes, deleteRecipe }) {
                 recipe
                     .name
                     .toLowerCase()
-                    .includes(searchField.toLowerCase())
+                    .includes(searchField.toLowerCase()) &&
+                (tagField === 'none' ? true : recipe.tags.includes(tagField))
             );
         }
     );
 
-    const handleChange = e => {
-        setSearchField(e.target.value);
+    const handleChange = (e, type) => {
+        if (type === 'search')
+            setSearchField(e.target.value);
+        else if (type === 'tag')
+            setTagField(e.target.value)
     };
 
+    const getTags = () => {
+        let tags = []
+        recipes.forEach(recipe => {
+            recipe.tags.forEach(tag => {
+                if (!tags.includes(tag)) tags.push(tag)
+            })
+        })
+
+        return tags;
+    }
+
+    const tags = getTags();
+    const tagOptions = tags.map((tag, index) => <option key={index} value={tag}>{tag}</option>)
+
     return (
-        <div
-            style={{
-                position: 'absolute', left: '50%',
-                transform: 'translate(-50%)',
-                width: "75%",
-                marginTop: "15px"
-            }}>
+        <div className="absolute-center-75">
 
             <div style={{
                 width: '100%',
@@ -42,21 +56,19 @@ function Search({ recipes, deleteRecipe }) {
                 <FormControl
                     placeholder="Search Recipes"
                     aria-label="Search Recipes"
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e, 'search')}
                 />
+                <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ marginLeft: '10px', width: '15%' }}>
+                    <option value={"none"}>Choose...</option>
+                    {tagOptions}
+                </Form.Select>
                 <Link to='/create'>
                     <Button style={{ marginLeft: '10px' }}>New</Button>
                 </Link>
             </div>
 
 
-            <div
-                style={{
-                    position: 'absolute', left: '50%',
-                    transform: 'translate(-50%)',
-                    width: "75%",
-                    marginTop: '10px'
-                }}>
+            <div className="absolute-center-75">
                 <RecipeList filteredRecipes={filteredRecipes} deleteRecipe={deleteRecipe} />
             </div>
         </div>

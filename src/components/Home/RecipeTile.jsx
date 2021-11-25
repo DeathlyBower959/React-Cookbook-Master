@@ -5,9 +5,9 @@ import { NavLink } from 'react-router-dom'
 
 import './RecipeTile.css'
 
-import defaultImage from '../../logo1024.png'
+import defaultImage from '../../assets/logo1024.png'
 
-const RecipeTile = ({ recipe, deleteRecipe }) => {
+const RecipeTile = ({ recipe, deleteRecipe}) => {
 
     const { name = "No Name", image, description = "No Description", tags, id } = recipe;
 
@@ -26,22 +26,22 @@ const RecipeTile = ({ recipe, deleteRecipe }) => {
                     <div className="col-sm-7" style={{ paddingLeft: '0px', paddingTop: '3px' }}>
                         <div className="card-body">
                             <NavLink style={{ color: "#000", textDecoration: 'none' }} to={`/recipe/${id}`}>
-                                <h5 className="card-title" style={{ marginBottom: '0px' }}>{name}</h5>
+                                <h5 className="card-title" style={{ marginBottom: '0px', marginLeft: '10px' }}>{name}</h5>
                             </NavLink>
-                            {tags == null ? '' : (<p style={{ color: '#808080', margin: '2px auto 0px 8px' }}>{formatted}</p>)}
-                            <hr style={{ margin: '10px auto' }} />
-                            <p className="card-text" style={{ marginTop: '5px' }}>{description}</p>
+                            {tags == null ? '' : (<p style={{ color: '#808080', margin: '2px auto 0px 18px' }}>{formatted}</p>)}
+                            <hr style={{ margin: '10px auto 10px 10px' }} />
+                            <p className="card-text" style={{ marginTop: '5px', marginLeft: '10px' }}>{description}</p>
                             <div>
                                 <NavLink to={"/edit/" + id}>
-                                    <Button style={{ margin: '5px' }}>Edit</Button>
+                                    <Button style={{ margin: '5px 5px 0px 5px' }}>Edit</Button>
                                 </NavLink>
-                                <Button style={{ margin: '5px' }} variant="danger" onClick={() => deleteRecipe(id)}>Delete</Button>
+                                <Button style={{ margin: '5px 5px 0px 5px' }} variant="danger" onClick={() => deleteRecipe(id)}>Delete</Button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-            </div >
+        </div >
     );
 }
 

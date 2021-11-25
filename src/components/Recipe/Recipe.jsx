@@ -6,7 +6,7 @@ import { Alert, Button } from 'react-bootstrap';
 
 import { Link, useParams } from "react-router-dom";
 
-import defaultImage from '../../logo1024.png'
+import defaultImage from '../../assets/logo1024.png'
 
 import { parseFormat } from '../../utils/time';
 

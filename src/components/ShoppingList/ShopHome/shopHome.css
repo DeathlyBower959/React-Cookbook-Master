@@ -1,0 +1,40 @@
+body {
+    background-color: rgb(230, 230, 230);
+}
+
+.centerDiv {
+    width: 60%;
+    height: 90%;
+    position: fixed;
+    background-color: white;
+    top: 5%;
+    left: 20%;
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 5px 5px 20px 4px rgba(0,0,0,0.64);
+    overflow: hidden;
+}
+
+.addItemDiv {
+    width: 40%;
+    height: 90vh;
+    float: left;
+}
+
+.separator {
+    height: 90vh;
+    width: 3px;
+    margin: -10px 10px;
+    background-color: rgb(230, 230, 230);
+    filter: blur(1px);
+}
+
+.itemListDiv {
+    width: 60%;
+    height: 90vh;
+    float: left;
+}
+
+hr {
+    filter: blur(1px);
+}

@@ -8,7 +8,7 @@ import { formatTime } from '../../utils/time';
 
 import '../../css/Globals.css'
 
-const CreateRecipe = ({ recipes, setRecipes }) => {
+const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
     const { id } = useParams()
     const [recipeInfo, setRecipeInfo] = useState(id === null || id === undefined ? { id: uuidv4() } : recipes.find(recipe => recipe.id === id) || { id: uuidv4() })
     const [DismissableAlerts, setDismissableAlerts] = useState({
@@ -27,6 +27,8 @@ const CreateRecipe = ({ recipes, setRecipes }) => {
     const ingredientName = useRef()
 
     const stepDescription = useRef()
+
+    const recipeImageSelect = useRef()
 
     const prepTime = useRef()
     const cookTime = useRef()
@@ -96,6 +98,18 @@ const CreateRecipe = ({ recipes, setRecipes }) => {
 
         if (itemName === "image") {
             if (event.target.files && event.target.files[0]) {
+
+                if (!['.png', '.jpg', '.jpeg', '.bmp', '.ico'].some((ex) => event.target.files[0].name.toLowerCase().endsWith(ex))) {
+                    event.target.value = ''
+                    setRecipeInfo(prevRecipe => {
+                        return {
+                            ...prevRecipe,
+                            image: null
+                        }
+                    })
+                    return;
+                }
+
                 let reader = new FileReader();
                 reader.onload = (e) => {
                     setRecipeInfo({ ...recipeInfo, image: e.target.result })
@@ -312,7 +326,8 @@ const CreateRecipe = ({ recipes, setRecipes }) => {
                 <Form.Group style={calcStyle('40%')}>
                     <div style={{ display: 'flex' }}>
                         {recipeInfo.image === null || recipeInfo.image === undefined ? '' :
-                            <button type="button" onClick={(e) => {
+                            <button type="button" onClick={() => {
+                                recipeImageSelect.current.value = ''
                                 setRecipeInfo(prevRecipe => {
                                     return {
                                         ...prevRecipe,
@@ -321,14 +336,14 @@ const CreateRecipe = ({ recipes, setRecipes }) => {
                                 })
                             }} style={{ color: 'red', width: '20px', fontWeight: 'bold', backgroundColor: 'rgba(0, 0, 0, 0)', borderWidth: '0px', marginRight: '5px' }}>X</button>
                         }
-                        <Form.Control type="file" accept="image/*" onChange={(e) => handleChange(e, 'image')} />
+                        <Form.Control ref={recipeImageSelect} type="file" accept="image/*" onChange={(e) => handleChange(e, 'image')} />
                         <Form.Control style={{ marginLeft: '10px' }} placeholder='Tags separated by ","' value={recipeInfo.tags?.join(', ') || ''} onChange={(e) => handleChange(e, 'tags')} />
                     </div>
                 </Form.Group>
 
                 <Form.Group style={calcStyle('80%')}>
                     <div style={calcStyle('80%')}>
-                        <div style={{ display: 'flex' }}>
+                        <div style={{ display: (isCrushed ? 'block' : 'flex') }}>
                             <Form.Control ref={prepTime} style={{ marginRight: '10px' }} placeholder='Prep Time (1h 2m)' onBlur={(e) => e.target.value = formatTime(recipeInfo.prep?.days, recipeInfo.prep?.hours, recipeInfo.prep?.minutes)} onChange={(e) => handleChange(e, 'prep')} />
                             <Form.Control ref={cookTime} placeholder='Cook Time (3h 15m)' onBlur={(e) => e.target.value = formatTime(recipeInfo.cook?.days, recipeInfo.cook?.hours, recipeInfo.cook?.minutes)} onChange={(e) => handleChange(e, 'cook')} />
                             <Form.Control ref={servSize} style={{ marginLeft: '10px' }} type="number" min={1} placeholder='Serving Size' onBlur={(e) => {

@@ -15,7 +15,7 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import useLocalStorage from '../../hooks/localStorage';
 
-function Home({ recipes, setRecipes }) {
+function Home({ recipes, setRecipes, isCrushed }) {
 
     const [editName, setEditName] = useState(false)
     const [name, setName] = useLocalStorage('cookbook_name', 'The Cookbook')
@@ -23,12 +23,12 @@ function Home({ recipes, setRecipes }) {
     const [modalTitle, setModalTitle] = useState('Hmm...')
 
     const [show, setShow] = useState(false)
+    const [globalID, setGlobalID] = useState()
 
-    let gId = null;
     let recipeInfo;
     const deleteRecipe = (id) => {
-        gId = id
-        recipeInfo = recipes.find(recipe => recipe.id == gId)
+        setGlobalID(id)
+        recipeInfo = recipes.find(recipe => recipe.id == globalID)
         setModalTitle(recipeInfo?.name || 'Hmm...')
         setShow(true)
     }
@@ -40,15 +40,17 @@ function Home({ recipes, setRecipes }) {
     );
 
     const noRecipeView = (
-        <div className="absolute-center">
-            <Alert variant="danger">
-                <Alert.Heading>Hmm...</Alert.Heading>
-                Seems like you have no recipes! Try creating one below...
-            </Alert>
-            <Link to="/create">
-                <Button>New Recipe</Button>
-            </Link>
-        </div >
+        <div style={{ backgroundColor: 'white', width: '100vw', height: '100vh' }}>
+            <div className="absolute-center">
+                <Alert variant="danger">
+                    <Alert.Heading>Hmm...</Alert.Heading>
+                    Seems like you have no recipes! Try creating one below...
+                </Alert>
+                <Link to="/create">
+                    <Button>New Recipe</Button>
+                </Link>
+            </div >
+        </div>
     )
 
     const recipeList = (
@@ -57,12 +59,16 @@ function Home({ recipes, setRecipes }) {
                 <Modal.Header closeButton>
                     <Modal.Title>{modalTitle}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>{`Are you sure you want to discard ${gId == null || gId == undefined ? 'this recipe' : 'your changes'}?`}</Modal.Body>
+                <Modal.Body>{`Are you sure you want to discard ${globalID == null || globalID == undefined ? 'this recipe' : 'your changes'}?`}</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShow(false)}>
                         Cancel
                     </Button>
-                    <Button variant="primary" onClick={() => setRecipes(recipes.filter(recipe => recipe.id !== gId))}>
+                    <Button variant="primary" onClick={() => setRecipes(prev => {
+                        setShow(false)
+                        return prev.filter(recipe => recipe.id != globalID
+                        )
+                    })}>
                         Yes
                     </Button>
                 </Modal.Footer>
@@ -76,7 +82,7 @@ function Home({ recipes, setRecipes }) {
                 }}>
 
                 <div style={{ display: 'flex', marginTop: "30px", justifyContent: 'center', alignItems: 'center' }}>
-                    <img src='./logo1024.png' width='64px' height='64px' style={{ transform: 'rotate(-20deg)' }} alt='Not found... :(' />
+                    <img src='./assets/logo1024.png' width='64px' height='64px' style={{ transform: 'rotate(-20deg)' }} alt='Not found... :(' />
                     <OverlayTrigger placement="bottom" overlay={renderTooltip}>
                         <h1 hidden={editName} style={{ textAlign: 'center' }} onDoubleClick={() => {
                             setEditName(true)
@@ -86,11 +92,11 @@ function Home({ recipes, setRecipes }) {
                     <Form.Control hidden={!editName} placeholder="Recipe Name" style={{ width: '40%' }} onChange={(e) => setName(e.target.value?.length > 0 ? e.target.value : 'The Cookbook')} onBlur={() => {
                         setEditName(false)
                     }} />
-                    <img src='./logo1024.png' width='64px' height='64px' style={{ transform: 'rotate(20deg)' }} alt='Not found... :(' />
+                    <img src='./assets/logo1024.png' width='64px' height='64px' style={{ transform: 'rotate(20deg)' }} alt='Not found... :(' />
                 </div>
             </div>
 
-            <Search deleteRecipe={deleteRecipe} recipes={recipes}></Search>
+            <Search deleteRecipe={deleteRecipe} recipes={recipes} isCrushed={isCrushed}></Search>
 
         </>
     )

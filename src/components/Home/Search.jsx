@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RecipeList from './RecipeList';
 import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import { Link } from 'react-router-dom'
-import { Form } from 'react-bootstrap';
+import { FloatingLabel, Form } from 'react-bootstrap';
 
 
-function Search({ recipes, deleteRecipe }) {
+function Search({ recipes, deleteRecipe, isCrushed }) {
 
     const [searchField, setSearchField] = useState("");
     const [tagField, setTagField] = useState("none");
+
 
     const filteredRecipes = recipes.filter(
         recipe => {
@@ -58,18 +59,33 @@ function Search({ recipes, deleteRecipe }) {
                     aria-label="Search Recipes"
                     onChange={(e) => handleChange(e, 'search')}
                 />
-                <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ marginLeft: '10px', width: '15%' }}>
-                    <option value={"none"}>Choose...</option>
-                    {tagOptions}
-                </Form.Select>
+                {isCrushed ? '' : (
+                    <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ marginLeft: '10px', width: '20%' }}>
+                        <option value={"none"}>Choose...</option>
+                        {tagOptions}
+                    </Form.Select>
+                )}
                 <Link to='/create'>
                     <Button style={{ marginLeft: '10px' }}>New</Button>
                 </Link>
             </div>
+            {!isCrushed ? '' : (
+                <div style={{
+                    width: '100%',
+                    margin: `10px auto 10px auto`,
+                    display: 'flex'
+                }}>
+                    <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ width: '40%' }}>
+                        <option value={"none"}>Choose...</option>
+                        {tagOptions}
+                    </Form.Select>
+                </div>
+
+            )}
 
 
             <div className="absolute-center-75">
-                <RecipeList filteredRecipes={filteredRecipes} deleteRecipe={deleteRecipe} />
+                <RecipeList filteredRecipes={filteredRecipes} deleteRecipe={deleteRecipe} isCrushed={isCrushed}/>
             </div>
         </div>
     );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes, Link } from "react-router-dom";
 
 import LocalStorage from './hooks/localStorage'
 
@@ -80,19 +80,17 @@ const App = () => {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" exact element={<Home recipes={recipes} setRecipes={setRecipes} isCrushed={isCrushed} />} />
+    <Routes>
+      <Route path="/" exact element={<Home recipes={recipes} setRecipes={setRecipes} isCrushed={isCrushed} />} />
 
-        <Route path="/shopping" element={<ShopHome shopping={shopping} updateShopping={updateShopping} toasts={toasts} setToasts={setToasts} setShopping={setShopping} isCrushed={isCrushed} />} />
+      <Route path="/shopping" element={<ShopHome shopping={shopping} updateShopping={updateShopping} toasts={toasts} setToasts={setToasts} setShopping={setShopping} isCrushed={isCrushed} />} />
 
-        <Route path="/create" element={<CreateRecipe recipes={recipes} setRecipes={setRecipes} isCrushed={isCrushed} />} />
-        <Route path="/edit/:id" element={<CreateRecipe recipes={recipes} setRecipes={setRecipes} isCrushed={isCrushed} />} />
+      <Route path="/create" element={<CreateRecipe recipes={recipes} setRecipes={setRecipes} isCrushed={isCrushed} />} />
+      <Route path="/edit/:id" element={<CreateRecipe recipes={recipes} setRecipes={setRecipes} isCrushed={isCrushed} />} />
 
-        <Route path="/recipe" exact element={<Recipe recipes={recipes} isCrushed={isCrushed} />} />
-        <Route path="/recipe/:id" element={<Recipe recipes={recipes} updateShopping={updateShopping} isCrushed={isCrushed} />} />
-      </Routes>
-    </Router>
+      <Route path="/recipe" exact element={<Recipe recipes={recipes} isCrushed={isCrushed} />} />
+      <Route path="/recipe/:id" element={<Recipe recipes={recipes} updateShopping={updateShopping} isCrushed={isCrushed} />} />
+    </Routes>
   )
 }
 

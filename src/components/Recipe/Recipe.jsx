@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 
+import './Recipe.css'
 import '../../css/Globals.css'
 
 import { Alert, Button } from 'react-bootstrap';
@@ -11,12 +12,14 @@ import defaultImage from '../../assets/logo1024.png'
 import { parseFormat } from '../../utils/time';
 
 
-const Recipe = ({ recipes, isCrushed }) => {
+const Recipe = ({ recipes, isCrushed, updateShopping }) => {
     const { id } = useParams()
 
     const recipeInfo = recipes.find(recipe => recipe.id === id)
 
-    if (recipeInfo === null) {
+    const [ingredients, setIngredients] = useState([])
+
+    if (recipeInfo === null || recipeInfo === undefined) {
         return (
             <div className="absolute-center">
                 <Alert variant="danger">
@@ -28,6 +31,26 @@ const Recipe = ({ recipes, isCrushed }) => {
                 </Link>
             </div>
         )
+    }
+
+    const ingredientSelected = (event, ingredient) => {
+        if (event.target.checked) {
+            setIngredients(prev => {
+                return [...prev, ingredient]
+            })
+        } else {
+            setIngredients(prev => {
+                return prev.filter(x => x !== ingredient)
+            })
+        }
+    }
+
+    const addAllIngredientsToList = () => {
+        if (ingredients.length === 0) {
+            recipeInfo.ingredients.forEach(ing => updateShopping(ing))
+        } else {
+            ingredients.forEach(ing => updateShopping(ing))
+        }
     }
 
 
@@ -62,13 +85,15 @@ const Recipe = ({ recipes, isCrushed }) => {
                             return (
                                 <div key={index + "ingDiv"} style={{ display: 'flex', marginTop: '20px' }}>
                                     <span style={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                                        <input type="checkbox" className="form-check-input" style={{ padding: '0px' }} />
+                                        <input type="checkbox" className="form-check-input" style={{ padding: '0px' }} onChange={(e) => ingredientSelected(e, ingredient)} />
                                     </span>
-                                    <p key={index + "ingPar"} className="gray-border" style={{ fontSize: '1rem', margin: '0px auto 0px 10px', display: 'block' }}>{ingredient.amount} | {ingredient.name}</p>
+                                    <p key={index + "ingPar"} className="gray-border" style={{ fontSize: '1rem', margin: '0px auto 0px 10px', display: 'block' }}>{ingredient.amount} {ingredient.unit} | {ingredient.name}</p>
                                 </div>
                             )
                         })
                     }
+
+                    <Button variant="outline-primary" style={{ margin: '15px' }} onClick={addAllIngredientsToList}>Add {ingredients.length === 0 ? '' : `${ingredients.length} `}Ingredient{ingredients.length === 0 || ingredients.length > 1 ? 's' : ''} To Shopping List</Button>
 
                 </div>
 
@@ -96,7 +121,7 @@ const Recipe = ({ recipes, isCrushed }) => {
 
             </div>
             <Link to='/'>
-                <Button variant='secondary' style={{marginLeft: '10px'}}>Back</Button>
+                <Button variant='secondary' style={{ marginLeft: '10px' }}>Back</Button>
             </Link>
             <br />
             <br />

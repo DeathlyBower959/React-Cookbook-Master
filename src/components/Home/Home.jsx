@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom'
 
 import '../../css/Globals.css'
@@ -30,7 +30,7 @@ function Home({ recipes, setRecipes, isCrushed }) {
     let recipeInfo;
     const deleteRecipe = (id) => {
         setGlobalID(id)
-        recipeInfo = recipes.find(recipe => recipe.id == globalID)
+        recipeInfo = recipes.find(recipe => recipe.id === globalID)
         setModalTitle(recipeInfo?.name || 'Hmm...')
         setShow(true)
     }
@@ -61,14 +61,14 @@ function Home({ recipes, setRecipes, isCrushed }) {
                 <Modal.Header closeButton>
                     <Modal.Title>{modalTitle}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>{`Are you sure you want to discard ${globalID == null || globalID == undefined ? 'this recipe' : 'your changes'}?`}</Modal.Body>
+                <Modal.Body>{`Are you sure you want to discard ${globalID === null || globalID === undefined ? 'this recipe' : 'your changes'}?`}</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShow(false)}>
                         Cancel
                     </Button>
                     <Button variant="primary" onClick={() => setRecipes(prev => {
                         setShow(false)
-                        return prev.filter(recipe => recipe.id != globalID
+                        return prev.filter(recipe => recipe.id !== globalID
                         )
                     })}>
                         Yes

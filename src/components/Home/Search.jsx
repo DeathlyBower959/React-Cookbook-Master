@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import RecipeList from './RecipeList';
 import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import { Link } from 'react-router-dom'
-import { FloatingLabel, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 
 
 function Search({ recipes, deleteRecipe, isCrushed }) {
@@ -71,11 +71,11 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
             </div>
             {!isCrushed ? '' : (
                 <div style={{
-                    width: '100%',
+                    width: '80%',
                     margin: `10px auto 10px auto`,
                     display: 'flex'
                 }}>
-                    <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ width: '40%' }}>
+                    <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ width: '100%' }}>
                         <option key="none">Choose...</option>
                         {tagOptions}
                     </Form.Select>

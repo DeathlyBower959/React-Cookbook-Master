@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
 import ItemList from '../ItemList/ItemList'
 import { Button, Form, Toast } from 'react-bootstrap'
 
@@ -7,11 +7,11 @@ import red from '../../../assets/red.svg'
 import { v4 as uuidv4 } from 'uuid'
 
 import './shopHome.css'
+
 import { Link } from 'react-router-dom'
+import { evalFrac } from '../../../utils/fractions'
 
-import convert from 'convert-units';
-
-const ShopHome = ({ shopping, setShopping, isCrushed }) => {
+const ShopHome = ({ shopping, setShopping, isCrushed, updateShopping, toasts, setToasts }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -23,59 +23,10 @@ const ShopHome = ({ shopping, setShopping, isCrushed }) => {
     const nameRef = useRef()
 
 
-    const [toasts, setToasts] = useState([]);
-
-    const updateShopping = (itemToAdd) => {
-
-        const itemToAddName = itemToAdd.name.toLowerCase().split(' ').filter(item => {
-            return item.trim()
-        }).join(' ')
-
-        const itemFound = shopping.find(item => item.name.toLowerCase().split(' ').join(' ') === itemToAddName)
-
-        if (itemFound !== undefined) {
-            try {
-                let formatted = Number(convert(itemToAdd.amount).from(itemToAdd.unit).to(itemFound.unit)) + Number(itemFound.amount)
-
-                if (itemFound.unit !== itemToAdd.unit) formatted = convert(formatted).from(itemFound.unit).toBest()
-
-                itemFound.amount = formatted.val || formatted
-                itemFound.unit = formatted.unit || itemFound.unit
-
-                setShopping(prevItems => {
-                    const newItems = prevItems.filter(item => item.name.toLowerCase().split(' ').join(' ') !== itemToAddName)
-                    return [...newItems, itemFound]
-                })
-            }
-            catch (err) {
-                console.log(err)
-                updateToasts('Hmm... There was an error!', err.message)
-            }
-            return
-        }
-
-        setShopping(prevItems => {
-            return [...prevItems, itemToAdd]
-        })
-    }
-
-    const updateToasts = (title, errMsg) => {
-        let id;
-        setToasts(prev => {
-            id = prev.length + 1;
-            return [...prev, { title, errMsg, id }]
-        })
-
-        setTimeout(() => {
-            setToasts(prev => {
-                return prev.filter(x => x.id != id)
-            })
-        }, 9000)
-    }
 
     const addItem = (_amount, _name, _unit) => {
         const amount = amountRef.current.value || (_amount ?? '')
-        const unit = unitRef.current.value == 'none' ? (_unit ?? '') : unitRef.current.value
+        const unit = unitRef.current.value === 'none' ? (_unit ?? '') : unitRef.current.value
         const name = nameRef.current.value || (_name ?? '')
 
         if (amount === '' || name === '' || unit === '') return
@@ -90,24 +41,13 @@ const ShopHome = ({ shopping, setShopping, isCrushed }) => {
         let itemFound = shopping.find(item => item.id === id)
 
         if (itemFound !== undefined) {
-            if (itemFound.amount > 1) {
-                itemFound.amount -= 1
+            if (evalFrac(itemFound.amount) > 1) {
                 setShopping(prevItems => {
                     const index = prevItems.indexOf(itemFound)
 
                     let newItems = prevItems
 
-                    newItems[index] = itemFound
-                    return [...newItems]
-                })
-            } else if (itemFound.amount >= 0.1) {
-                itemFound.amount -= 0.1
-                setShopping(prevItems => {
-                    const index = prevItems.indexOf(itemFound)
-
-                    let newItems = prevItems
-
-                    newItems[index] = itemFound
+                    newItems[index] = { ...itemFound, amount: evalFrac(itemFound.amount) - 1 }
                     return [...newItems]
                 })
             } else {
@@ -128,7 +68,7 @@ const ShopHome = ({ shopping, setShopping, isCrushed }) => {
                         <Form onSubmit={handleSubmit}>
                             <Form.Group style={{ margin: '10px' }}>
                                 <div style={{ display: (isCrushed ? 'block' : 'flex') }}>
-                                    <Form.Control ref={amountRef} style={{ margin: (isCrushed ? 'auto auto 5px auto' : 'auto 5px auto auto') }} placeholder="Amount" />
+                                    <Form.Control ref={amountRef} style={{ margin: (isCrushed ? 'auto auto 5px auto' : 'auto 5px auto auto') }} placeholder="2 1/2" />
                                     <Form.Select ref={unitRef} style={{ marginRight: '5px' }} >
                                         <option value='none'>Choose...</option>
                                         <hr />
@@ -175,7 +115,7 @@ const ShopHome = ({ shopping, setShopping, isCrushed }) => {
                 {
                     toasts.map(toast => {
                         return (
-                            <Toast show={true} style={{ marginTop: '10px' }} onClose={() => setToasts(prev => prev.filter(x => x.id != toast.id))}>
+                            <Toast show={true} style={{ marginTop: '10px' }} onClose={() => setToasts(prev => prev.filter(x => x.id !== toast.id))}>
                                 <Toast.Header>
                                     <img
                                         src={red}

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Form, Button, Alert, Modal, Dropdown } from 'react-bootstrap'
-import { useParams, Link } from "react-router-dom";
+import { Form, Button, Alert, Modal } from 'react-bootstrap'
+import { useParams } from "react-router-dom";
 import useUnsavedChangesWarning from '../useUnsavedChangesWarning';
 
 import { v4 as uuidv4 } from 'uuid'
@@ -52,8 +52,8 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
 
         if (recipeInfo.name && recipeInfo.name !== '') validated.name = true
         if (recipeInfo.description && recipeInfo.description !== '') validated.description = true
-        if (recipeInfo.prep && (recipeInfo.prep.days != 0 || recipeInfo.prep.hours != 0 || recipeInfo.prep.minutes != 0)) validated.prep = true
-        if (recipeInfo.cook && (recipeInfo.cook.days != 0 || recipeInfo.cook.hours != 0 || recipeInfo.cook.minutes != 0)) validated.cook = true
+        if (recipeInfo.prep && (recipeInfo.prep.days !== 0 || recipeInfo.prep.hours !== 0 || recipeInfo.prep.minutes !== 0)) validated.prep = true
+        if (recipeInfo.cook && (recipeInfo.cook.days !== 0 || recipeInfo.cook.hours !== 0 || recipeInfo.cook.minutes !== 0)) validated.cook = true
         if (recipeInfo.ingredients && recipeInfo.ingredients.length !== 0) validated.ingredients = true
         if (recipeInfo.steps && recipeInfo.steps.length !== 0) validated.steps = true
 
@@ -67,8 +67,6 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
             ingredients: !validated.ingredients,
             steps: !validated.steps
         })
-
-        console.log(all)
         return all
     }
 
@@ -92,10 +90,6 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                 return { ...prev, description: false }
             })
             setRecipeInfo({ ...recipeInfo, description: event.target.value })
-        }
-
-        if (itemName === "autoImage") {
-            console.log(event.shiftKey)
         }
 
         if (itemName === "image") {
@@ -283,7 +277,7 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                 <Modal.Header closeButton>
                     <Modal.Title>{recipeInfo.name || 'New Recipe'}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>{`Are you sure you want to discard ${id == null || id == undefined ? 'this recipe' : 'your changes'}?`}</Modal.Body>
+                <Modal.Body>{`Are you sure you want to discard ${id === null || id === undefined ? 'this recipe' : 'your changes'}?`}</Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setConfirmCancelShow(false)}>
                         Cancel
@@ -339,7 +333,7 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                                 })
                             }} style={{ color: 'red', width: '20px', fontWeight: 'bold', backgroundColor: 'rgba(0, 0, 0, 0)', borderWidth: '0px', marginRight: '5px' }}>X</button>
                         }
-                        <Form.Control style={{ marginRight: '10px' }} ref={recipeImageSelect} type="file" accept="image/*" onClick={(e) => handleChange(e, 'autoImage')} onChange={(e) => handleChange(e, 'image')} />
+                        <Form.Control style={{ marginRight: '10px' }} ref={recipeImageSelect} type="file" accept="image/*" onChange={(e) => handleChange(e, 'image')} />
                         <Form.Control style={{ marginTop: (isCrushed ? '5px' : '0px') }} placeholder='Tags separated by ","' value={recipeInfo.tags?.join(', ') || ''} onChange={(e) => handleChange(e, 'tags')} />
                     </div>
                 </Form.Group>
@@ -388,7 +382,7 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                     </div>
                     <div style={{ display: (isCrushed ? 'block' : 'flex'), marginTop: '20px', marginLeft: '20px' }}>
                         <div style={{ display: 'flex', width: (isCrushed ? '80%' : '20%') }}>
-                            <Form.Control ref={ingredientAmount} placeholder='2, 1/2' style={{ width: '40%', marginRight: '5px' }} />
+                            <Form.Control ref={ingredientAmount} placeholder='2 1/2' style={{ width: '40%', marginRight: '5px' }} />
                             <Form.Select ref={ingredientUnit} style={{ width: '60%', marginRight: '5px' }} >
                                 <option value='none'>Choose...</option>
                                 <hr />

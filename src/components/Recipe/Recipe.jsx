@@ -61,7 +61,7 @@ const Recipe = ({ recipes, isCrushed, updateShopping }) => {
             <p style={{ textAlign: 'left', margin: '0px 20px 20px 20px' }}>{recipeInfo.description}</p>
 
             <div style={{ display: 'inline-block' }}>
-                <img width='300px' src={recipeInfo.image ?? defaultImage} style={{ border: '2px solid #ced4da', borderRadius: '20px', margin: ' auto 15px 20px 20px' }} alt='Not found... :(' />
+                <img width='300px' height='300px' src={recipeInfo.image ?? defaultImage} style={{ border: '2px solid #ced4da', borderRadius: '20px', margin: ' auto 15px 20px 20px' }} alt='Not found... :(' />
                 <div style={{
                     border: '2px solid #ced4da', borderRadius: '15px', padding: '20px',
                     display: 'inline-block'

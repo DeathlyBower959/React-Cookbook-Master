@@ -15,8 +15,7 @@ const RecipeTile = ({ recipe, deleteRecipe}) => {
 
     return (
         <div className="grow">
-
-            <div id={id} className="card" style={{ marginTop: "15px", borderRadius: '15px', transition: 'height 1s ease-in-out' }}>
+            <div id={id} className="card" style={{ marginBottom: "15px", borderRadius: '15px', transition: 'height 1s ease-in-out'}}>
                 <div className="row no-gutters">
                     <div className="col-sm-3" style={{ marginLeft: '10px', marginTop: '10px', marginBottom: '10px', paddingRight: '0px', width: '200px' }}>
                         <NavLink to={`/recipe/${id}`}>

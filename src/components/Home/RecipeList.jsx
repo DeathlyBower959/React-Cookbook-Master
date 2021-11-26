@@ -12,6 +12,8 @@ const RecipeList = ({ filteredRecipes, deleteRecipe }) => {
                     <p>Seems like there are no recipes with that name!</p>
                 </Alert>
             )}
+            <div style={{ marginTop: '20px' }} />
+
         </div>
     );
 }

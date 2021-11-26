@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Form, Button, Alert, Modal } from 'react-bootstrap'
+import { Form, Button, Alert, Modal, Dropdown } from 'react-bootstrap'
 import { useParams, Link } from "react-router-dom";
 import useUnsavedChangesWarning from '../useUnsavedChangesWarning';
 
@@ -16,14 +16,14 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
         description: false,
         prep: false,
         cook: false,
-        servSize: false,
         ingredients: false,
         steps: false
     })
 
-    const [show, setShow] = useState(false)
+    const [confirmCancelShow, setConfirmCancelShow] = useState(false)
 
     const ingredientAmount = useRef()
+    const ingredientUnit = useRef()
     const ingredientName = useRef()
 
     const stepDescription = useRef()
@@ -44,7 +44,6 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
             description: false,
             prep: false,
             cook: false,
-            servSize: false,
             ingredients: false,
             steps: false
         }
@@ -53,24 +52,23 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
 
         if (recipeInfo.name && recipeInfo.name !== '') validated.name = true
         if (recipeInfo.description && recipeInfo.description !== '') validated.description = true
-        if (recipeInfo.prep && recipeInfo.prep !== '') validated.prep = true
-        if (recipeInfo.cook && recipeInfo.cook !== '') validated.cook = true
-        if (recipeInfo.servSize && recipeInfo.servSize !== '') validated.servSize = true
-        if (recipeInfo.ingredients && recipeInfo.ingredients !== []) validated.ingredients = true
-        if (recipeInfo.steps && recipeInfo.steps !== []) validated.steps = true
+        if (recipeInfo.prep && (recipeInfo.prep.days != 0 || recipeInfo.prep.hours != 0 || recipeInfo.prep.minutes != 0)) validated.prep = true
+        if (recipeInfo.cook && (recipeInfo.cook.days != 0 || recipeInfo.cook.hours != 0 || recipeInfo.cook.minutes != 0)) validated.cook = true
+        if (recipeInfo.ingredients && recipeInfo.ingredients.length !== 0) validated.ingredients = true
+        if (recipeInfo.steps && recipeInfo.steps.length !== 0) validated.steps = true
 
-        if (validated.name && validated.description && validated.prep && validated.cook && validated.servSize && validated.ingredients && validated.steps) all = true
+        if (validated.name && validated.description && validated.prep && validated.cook && validated.ingredients && validated.steps) all = true
 
         setDismissableAlerts({
             name: !validated.name,
             description: !validated.description,
             prep: !validated.prep,
             cook: !validated.cook,
-            servSize: !validated.servSize,
             ingredients: !validated.ingredients,
             steps: !validated.steps
         })
 
+        console.log(all)
         return all
     }
 
@@ -94,6 +92,10 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                 return { ...prev, description: false }
             })
             setRecipeInfo({ ...recipeInfo, description: event.target.value })
+        }
+
+        if (itemName === "autoImage") {
+            console.log(event.shiftKey)
         }
 
         if (itemName === "image") {
@@ -121,23 +123,25 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
         if (itemName === "tags")
             setRecipeInfo({ ...recipeInfo, tags: event.target.value.split(', ') })
 
+
         if (itemName === "prep") {
             setDismissableAlerts(prev => {
                 return { ...prev, prep: false }
             })
+
             const times = event.target.value.split(' ')
             const days = Number(times.find(time => time.includes('d') || time.includes('days'))?.replace(/\D/g, '') ?? 0)
             const hours = Number(times.find(time => time.includes('h') || time.includes('hours'))?.replace(/\D/g, '') ?? 0)
             const minutes = Number(times.find(time => time.includes('m') || time.includes('minutes'))?.replace(/\D/g, '') ?? 0)
 
             setRecipeInfo({ ...recipeInfo, prep: { days, hours, minutes } })
-
         }
 
         if (itemName === "cook") {
             setDismissableAlerts(prev => {
                 return { ...prev, cook: false }
             })
+
             const times = event.target.value.split(' ')
             const days = Number(times.find(time => time.includes('d') || time.includes('days'))?.replace(/\D/g, '') ?? 0)
             const hours = Number(times.find(time => time.includes('h') || time.includes('hours'))?.replace(/\D/g, '') ?? 0)
@@ -158,12 +162,14 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
 
     const addIngredient = () => {
         if (ingredientAmount.current.value === '' ||
+            ingredientUnit.current.value === 'Choose...' ||
             ingredientName.current.value === '') return
 
         ingredientAmount.current.focus()
 
-        const ingredientToAdd = { amount: ingredientAmount.current.value, name: ingredientName.current.value, id: uuidv4() }
+        const ingredientToAdd = { amount: ingredientAmount.current.value, unit: ingredientUnit.current.value, name: ingredientName.current.value, id: uuidv4() }
         ingredientAmount.current.value = ''
+        ingredientUnit.current.value = 'none'
         ingredientName.current.value = ''
 
 
@@ -231,11 +237,10 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
 
 
     const handleCancel = () => {
-        setShow(true)
+        setConfirmCancelShow(true)
     }
 
     const handleSubmit = (e) => {
-        setPristine()
 
         const isValidated = validateForm();
         if (!isValidated)
@@ -259,8 +264,7 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                     ]
                 })
             }
-        } else {
-
+            setPristine()
         }
     }
 
@@ -273,29 +277,28 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
         }
     }
 
-    const test = (e) => {
-
-    }
-
     return (
-        <>
-            <Modal show={show} onHide={() => setShow(false)}>
+        <div style={{ position: 'fixed', top: '0', bottom: '0', left: '0', right: '0', overflow: 'auto', backgroundColor: 'white' }}>
+            <Modal show={confirmCancelShow} onHide={() => setConfirmCancelShow(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>{recipeInfo.name || 'New Recipe'}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>{`Are you sure you want to discard ${id == null || id == undefined ? 'this recipe' : 'your changes'}?`}</Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShow(false)}>
+                    <Button variant="secondary" onClick={() => setConfirmCancelShow(false)}>
                         Cancel
                     </Button>
-                    <Button variant="primary" onClick={() => window.location = '/'}>
+                    <Button variant="primary" onClick={() => {
+                        setPristine()
+                        window.location = '/'
+                    }}>
                         Yes
                     </Button>
                 </Modal.Footer>
             </Modal>
 
             <Form action='/'>
-                <h1 style={{ textAlign: 'center', marginTop: '20px', marginBottom: '20px' }}>{recipeInfo.name || "Recipe Name"}</h1>
+                <h1 style={{ textAlign: 'center', paddingTop: '20px', marginBottom: '20px' }}>{recipeInfo.name || "Recipe Name"}</h1>
 
                 <Form.Control style={calcStyle("30%")} placeholder="Recipe Name" value={recipeInfo.name} onChange={(e) => handleChange(e, 'name')} />
                 {DismissableAlerts.name ?
@@ -324,7 +327,7 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                 }
 
                 <Form.Group style={calcStyle('40%')}>
-                    <div style={{ display: 'flex' }}>
+                    <div style={{ display: (isCrushed ? 'block' : 'flex') }}>
                         {recipeInfo.image === null || recipeInfo.image === undefined ? '' :
                             <button type="button" onClick={() => {
                                 recipeImageSelect.current.value = ''
@@ -336,8 +339,8 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                                 })
                             }} style={{ color: 'red', width: '20px', fontWeight: 'bold', backgroundColor: 'rgba(0, 0, 0, 0)', borderWidth: '0px', marginRight: '5px' }}>X</button>
                         }
-                        <Form.Control ref={recipeImageSelect} type="file" accept="image/*" onChange={(e) => handleChange(e, 'image')} />
-                        <Form.Control style={{ marginLeft: '10px' }} placeholder='Tags separated by ","' value={recipeInfo.tags?.join(', ') || ''} onChange={(e) => handleChange(e, 'tags')} />
+                        <Form.Control style={{ marginRight: '10px' }} ref={recipeImageSelect} type="file" accept="image/*" onClick={(e) => handleChange(e, 'autoImage')} onChange={(e) => handleChange(e, 'image')} />
+                        <Form.Control style={{ marginTop: (isCrushed ? '5px' : '0px') }} placeholder='Tags separated by ","' value={recipeInfo.tags?.join(', ') || ''} onChange={(e) => handleChange(e, 'tags')} />
                     </div>
                 </Form.Group>
 
@@ -345,39 +348,25 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                     <div style={calcStyle('80%')}>
                         <div style={{ display: (isCrushed ? 'block' : 'flex') }}>
                             <Form.Control ref={prepTime} style={{ marginRight: '10px' }} placeholder='Prep Time (1h 2m)' onBlur={(e) => e.target.value = formatTime(recipeInfo.prep?.days, recipeInfo.prep?.hours, recipeInfo.prep?.minutes)} onChange={(e) => handleChange(e, 'prep')} />
-                            <Form.Control ref={cookTime} placeholder='Cook Time (3h 15m)' onBlur={(e) => e.target.value = formatTime(recipeInfo.cook?.days, recipeInfo.cook?.hours, recipeInfo.cook?.minutes)} onChange={(e) => handleChange(e, 'cook')} />
-                            <Form.Control ref={servSize} style={{ marginLeft: '10px' }} type="number" min={1} placeholder='Serving Size' onBlur={(e) => {
+                            <Form.Control ref={cookTime} style={{ marginRight: '10px', marginTop: (isCrushed ? '5px' : '0px') }} placeholder='Cook Time (3h 15m)' onBlur={(e) => e.target.value = formatTime(recipeInfo.cook?.days, recipeInfo.cook?.hours, recipeInfo.cook?.minutes)} onChange={(e) => handleChange(e, 'cook')} />
+                            <Form.Control ref={servSize} style={{ marginTop: (isCrushed ? '5px' : '0px') }} type="number" min={1} placeholder='Serving Size' onBlur={(e) => {
                                 if (e.target.value < 1) e.target.value = 1
                                 e.target.value = parseInt(e.target.value)
                                 handleChange(e, 'serv')
                             }} onChange={(e) => handleChange(e, 'serv')} />
                         </div>
                     </div>
-
-                    <div style={{ display: 'flex' }}>
-                        {DismissableAlerts.prep || DismissableAlerts.cook ?
-                            <div style={calcStyle('50%')}>
-                                <Alert style={{ textAlign: 'center', marginRight: '10px' }} variant="danger" onClose={() => setDismissableAlerts(prev => {
-                                    return { ...prev, prep: false, cook: false }
-                                })} dismissible>
-                                    <p>You didn't give this recipe any prep/cook time!</p>
-                                </Alert>
-                            </div>
-                            :
-                            <></>
-                        }
-                        {DismissableAlerts.servSize ?
-                            <div style={calcStyle('50%')}>
-                                <Alert style={{ textAlign: 'center', marginLeft: '10px' }} variant="danger" onClose={() => setDismissableAlerts(prev => {
-                                    return { ...prev, servSize: false }
-                                })} dismissible>
-                                    <p>You didn't give this recipe an serving size!</p>
-                                </Alert>
-                            </div>
-                            :
-                            <></>
-                        }
-                    </div>
+                    {DismissableAlerts.prep || DismissableAlerts.cook ?
+                        <div style={calcStyle('50%')}>
+                            <Alert style={{ textAlign: 'center', marginRight: '10px' }} variant="danger" onClose={() => setDismissableAlerts(prev => {
+                                return { ...prev, prep: false, cook: false }
+                            })} dismissible>
+                                <p>You didn't give this recipe any prep/cook time!</p>
+                            </Alert>
+                        </div>
+                        :
+                        <></>
+                    }
                 </Form.Group>
 
                 <br />
@@ -390,18 +379,41 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                                 return (
                                     <div key={index + "ingDiv"} style={{ display: 'flex', marginTop: '20px' }}>
                                         <button type="button" key={index + "ingBut"} onClick={(e) => removeIngredient(e)} id={ingredient.id} variant='danger' style={{ color: 'red', width: '20px', fontWeight: 'bold', backgroundColor: 'rgba(0, 0, 0, 0)', borderWidth: '0px' }}>X</button>
-                                        <p key={index + "ingPar"} className="gray-border" style={{ fontSize: '1rem', margin: '0px auto 0px 10px', display: 'block' }}>{ingredient.amount} | {ingredient.name}</p>
+                                        <p key={index + "ingPar"} className="gray-border" style={{ fontSize: '1rem', margin: '0px auto 0px 10px', display: 'block', color: 'gray' }}>{ingredient.amount} {ingredient.unit} | {ingredient.name}</p>
                                     </div>
                                 )
                             })
                         }
 
                     </div>
-
-                    <div style={{ display: 'flex', marginTop: '20px', marginLeft: '20px' }}>
-                        <Form.Control ref={ingredientAmount} placeholder='1 Cup' style={{ width: '15%', marginRight: '5px' }} />
-                        <Form.Control ref={ingredientName} placeholder='Ingredient Name' style={{ width: '80%' }} />
-                        <Button variant="success" onClick={addIngredient} style={{ margin: '5px auto 5px 10px', display: 'block' }}>Add</Button>
+                    <div style={{ display: (isCrushed ? 'block' : 'flex'), marginTop: '20px', marginLeft: '20px' }}>
+                        <div style={{ display: 'flex', width: (isCrushed ? '80%' : '20%') }}>
+                            <Form.Control ref={ingredientAmount} placeholder='2, 1/2' style={{ width: '40%', marginRight: '5px' }} />
+                            <Form.Select ref={ingredientUnit} style={{ width: '60%', marginRight: '5px' }} >
+                                <option value='none'>Choose...</option>
+                                <hr />
+                                <hr />
+                                <option value='tsp'>tsp</option>
+                                <option value='tbsp'>tbsp</option>
+                                <option value='fl-oz'>fl-oz</option>
+                                <option value='cup'>cup</option>
+                                <option value='pnt'>pint</option>
+                                <option value='qt'>quart</option>
+                                <option value='gal'>gallon</option>
+                                <option value='ml'>ml</option>
+                                <option value='l'>L</option>
+                                <option value='dl'>dl</option>
+                                <hr />
+                                <hr />
+                                <option value='lb'>lb</option>
+                                <option value='oz'>oz</option>
+                                <option value='mg'>mg</option>
+                                <option value='g'>g</option>
+                                <option value='kg'>kg</option>
+                            </Form.Select>
+                        </div>
+                        <Form.Control ref={ingredientName} placeholder='Ingredient Name' style={{ width: '80%', marginTop: (isCrushed ? '5px' : '0') }} />
+                        <Button variant="success" onClick={addIngredient} style={{ margin: (isCrushed ? '5px auto 5px 0px' : '5px auto 5px 10px'), display: 'block' }}>Add</Button>
                     </div>
                     {DismissableAlerts.ingredients ?
                         <div style={calcStyle('70%', '10px', '0px')}>
@@ -424,7 +436,7 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                                 return (
                                     <div key={index + "stepDiv"} style={{ display: 'flex', marginTop: '20px' }}>
                                         <button type="button" key={index + "stepBut"} onClick={(e) => removeStep(e)} id={step.id} variant='danger' style={{ color: 'red', width: '20px', fontWeight: 'bold', backgroundColor: 'rgba(0, 0, 0, 0)', borderWidth: '0px' }}>X</button>
-                                        <div key={index + "stepDiv2"} className="gray-border" style={{ fontSize: '1rem', margin: '0px auto 0px 10px', display: 'block' }}>
+                                        <div key={index + "stepDiv2"} className="gray-border" style={{ fontSize: '1rem', color: 'gray', margin: '0px auto 0px 10px', padding: '7px 15px 7px 8px', display: 'block' }}>
                                             <h6 key={index + "stepDivh6"} style={{ marginBottom: '0px' }}>Step {index + 1}</h6>
                                             <p key={index + "stepDivPar"} style={{ margin: '5px 0px 0px 10px' }}>{step.description}</p>
                                         </div>
@@ -452,14 +464,12 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                     }
                 </Form.Group>
 
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: '40px' }}>
-                    <div style={{ marginTop: '10px' }}>
-                        <Button type='submit' style={{ marginRight: '5px' }} variant="primary" onClick={(e) => handleSubmit(e)}>{id === null || id === undefined ? "Create" : "Edit"}</Button>
-                        <Button variant="danger" style={{ marginLeft: '5px' }} onClick={handleCancel}>Cancel</Button>
-                    </div>
+                <div style={{ backgroundColor: 'white', display: 'flex', marginTop: '10px', justifyContent: 'center', alignItems: 'center', marginBottom: '40px' }}>
+                    <Button variant="secondary" style={{ marginRight: '5px' }} onClick={handleCancel}>Cancel</Button>
+                    <Button type='submit' style={{ marginLeft: '5px' }} variant="primary" onClick={(e) => handleSubmit(e)}>{id === null || id === undefined ? "Create" : "Edit"}</Button>
                 </div>
             </Form>
-        </>
+        </div >
     )
 
 }

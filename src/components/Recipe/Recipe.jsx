@@ -11,7 +11,7 @@ import defaultImage from '../../assets/logo1024.png'
 import { parseFormat } from '../../utils/time';
 
 
-const Recipe = ({ recipes }) => {
+const Recipe = ({ recipes, isCrushed }) => {
     const { id } = useParams()
 
     const recipeInfo = recipes.find(recipe => recipe.id === id)

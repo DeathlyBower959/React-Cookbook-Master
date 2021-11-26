@@ -34,7 +34,7 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
     const getTags = () => {
         let tags = []
         recipes.forEach(recipe => {
-            recipe.tags.forEach(tag => {
+            recipe.tags?.forEach(tag => {
                 if (!tags.includes(tag)) tags.push(tag)
             })
         })
@@ -49,7 +49,7 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
         <div className="absolute-center-75">
 
             <div style={{
-                width: '100%',
+                width: '80%',
                 margin: `10px auto 10px auto`,
                 display: 'flex'
             }}>
@@ -61,7 +61,7 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
                 />
                 {isCrushed ? '' : (
                     <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ marginLeft: '10px', width: '20%' }}>
-                        <option value={"none"}>Choose...</option>
+                        <option key="none">Choose...</option>
                         {tagOptions}
                     </Form.Select>
                 )}
@@ -76,7 +76,7 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
                     display: 'flex'
                 }}>
                     <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ width: '40%' }}>
-                        <option value={"none"}>Choose...</option>
+                        <option key="none">Choose...</option>
                         {tagOptions}
                     </Form.Select>
                 </div>
@@ -84,9 +84,10 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
             )}
 
 
-            <div className="absolute-center-75">
-                <RecipeList filteredRecipes={filteredRecipes} deleteRecipe={deleteRecipe} isCrushed={isCrushed}/>
+            <div className="absolute-center-75" style={{ width: '55%' }}>
+                <RecipeList filteredRecipes={filteredRecipes} deleteRecipe={deleteRecipe} isCrushed={isCrushed} />
             </div>
+
         </div>
     );
 }

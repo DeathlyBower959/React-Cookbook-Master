@@ -15,6 +15,8 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import useLocalStorage from '../../hooks/localStorage';
 
+import logo from '../../assets/logo1024.png'
+
 function Home({ recipes, setRecipes, isCrushed }) {
 
     const [editName, setEditName] = useState(false)
@@ -40,7 +42,7 @@ function Home({ recipes, setRecipes, isCrushed }) {
     );
 
     const noRecipeView = (
-        <div style={{ backgroundColor: 'white', width: '100vw', height: '100vh' }}>
+        <div style={{ backgroundColor: 'white', position: 'fixed', top: '0', bottom: '0', left: '0', right: '0', overflow: 'auto' }}>
             <div className="absolute-center">
                 <Alert variant="danger">
                     <Alert.Heading>Hmm...</Alert.Heading>
@@ -54,7 +56,7 @@ function Home({ recipes, setRecipes, isCrushed }) {
     )
 
     const recipeList = (
-        <>
+        <div style={{ backgroundColor: 'white', position: 'fixed', top: '0', bottom: '0', left: '0', right: '0', overflow: 'auto' }}>
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>{modalTitle}</Modal.Title>
@@ -77,12 +79,12 @@ function Home({ recipes, setRecipes, isCrushed }) {
             <div
                 style={{
                     width: '75%',
-                    margin: `10px auto 10px auto`,
+                    margin: `0px auto 10px auto`,
                     display: 'block'
                 }}>
 
-                <div style={{ display: 'flex', marginTop: "30px", justifyContent: 'center', alignItems: 'center' }}>
-                    <img src='./assets/logo1024.png' width='64px' height='64px' style={{ transform: 'rotate(-20deg)' }} alt='Not found... :(' />
+                <div style={{ display: 'flex', paddingTop: "30px", justifyContent: 'center', alignItems: 'center' }}>
+                    <img src={logo} width='64px' height='64px' style={{ transform: 'rotate(-20deg)' }} alt='Not found... :(' />
                     <OverlayTrigger placement="bottom" overlay={renderTooltip}>
                         <h1 hidden={editName} style={{ textAlign: 'center' }} onDoubleClick={() => {
                             setEditName(true)
@@ -92,13 +94,17 @@ function Home({ recipes, setRecipes, isCrushed }) {
                     <Form.Control hidden={!editName} placeholder="Recipe Name" style={{ width: '40%' }} onChange={(e) => setName(e.target.value?.length > 0 ? e.target.value : 'The Cookbook')} onBlur={() => {
                         setEditName(false)
                     }} />
-                    <img src='./assets/logo1024.png' width='64px' height='64px' style={{ transform: 'rotate(20deg)' }} alt='Not found... :(' />
+                    <img src={logo} width='64px' height='64px' style={{ transform: 'rotate(20deg)' }} alt='Not found... :(' />
                 </div>
             </div>
 
             <Search deleteRecipe={deleteRecipe} recipes={recipes} isCrushed={isCrushed}></Search>
 
-        </>
+            <Link to="/shopping">
+                <Button style={{ position: 'fixed', bottom: '10px', left: '10px' }} variant="primary">Shopping List</Button>
+            </Link>
+
+        </div>
     )
 
     return (

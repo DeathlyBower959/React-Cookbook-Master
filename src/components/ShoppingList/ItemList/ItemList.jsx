@@ -16,8 +16,6 @@ const ItemList = ({ items, addItem, deleteItem }) => {
             )}
         </div>
     );
-
-    return <p>hi</p>
 }
 
 export default ItemList;

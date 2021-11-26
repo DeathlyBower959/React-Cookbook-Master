@@ -61,7 +61,7 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
                 />
                 {isCrushed ? '' : (
                     <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ marginLeft: '10px', width: '20%' }}>
-                        <option key="none">Choose...</option>
+                        <option value="none">Choose...</option>
                         {tagOptions}
                     </Form.Select>
                 )}
@@ -76,7 +76,7 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
                     display: 'flex'
                 }}>
                     <Form.Select value={tagField} onChange={(e) => handleChange(e, 'tag')} style={{ width: '100%' }}>
-                        <option key="none">Choose...</option>
+                        <option value="none">Choose...</option>
                         {tagOptions}
                     </Form.Select>
                 </div>

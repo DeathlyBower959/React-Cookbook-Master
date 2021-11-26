@@ -98,7 +98,7 @@ function Home({ recipes, setRecipes, isCrushed }) {
                 </div>
             </div>
 
-            <Search deleteRecipe={deleteRecipe} recipes={recipes} isCrushed={isCrushed}></Search>
+            <Search setRecipes={setRecipes} deleteRecipe={deleteRecipe} recipes={recipes} isCrushed={isCrushed}></Search>
 
             <Link to="/shopping">
                 <Button style={{ position: 'fixed', bottom: '10px', left: '10px' }} variant="primary">Shopping List</Button>

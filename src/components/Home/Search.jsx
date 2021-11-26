@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import { Form } from 'react-bootstrap';
 
 
-function Search({ recipes, deleteRecipe, isCrushed }) {
+function Search({ recipes, setRecipes, deleteRecipe, isCrushed }) {
 
     const [searchField, setSearchField] = useState("");
     const [tagField, setTagField] = useState("none");
@@ -46,8 +46,8 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
     const tagOptions = tags.map((tag, index) => <option key={index} value={tag}>{tag}</option>)
 
     return (
-        <div className="absolute-center-75">
-
+        // <div className="absolute-center-75">
+        <>
             <div style={{
                 width: '80%',
                 margin: `10px auto 10px auto`,
@@ -83,12 +83,13 @@ function Search({ recipes, deleteRecipe, isCrushed }) {
 
             )}
 
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <div style={{ width: '55%' }}>
+                    <RecipeList filteredRecipes={filteredRecipes} setRecipes={setRecipes} deleteRecipe={deleteRecipe} isCrushed={isCrushed} />
 
-            <div className="absolute-center-75" style={{ width: '55%' }}>
-                <RecipeList filteredRecipes={filteredRecipes} deleteRecipe={deleteRecipe} isCrushed={isCrushed} />
+                </div>
             </div>
-
-        </div>
+        </>
     );
 }
 

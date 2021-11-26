@@ -9,7 +9,7 @@ const RecipeList = ({ filteredRecipes, deleteRecipe }) => {
             {filtered.length > 0 ? filtered : (
                 <Alert style={{ marginTop: '15px' }} variant="danger">
                     <Alert.Heading>Hmm...</Alert.Heading>
-                    <p>Seems like there are no recipes with that name!</p>
+                    <p>Seems like there are no recipes with that name/tag!</p>
                 </Alert>
             )}
             <div style={{ marginTop: '20px' }} />

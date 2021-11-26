@@ -93,7 +93,7 @@ const Recipe = ({ recipes, isCrushed, updateShopping }) => {
                         })
                     }
 
-                    <Button variant="outline-primary" style={{ margin: '15px' }} onClick={addAllIngredientsToList}>Add {ingredients.length === 0 ? 'All' : `${ingredients.length} `}Ingredient{ingredients.length === 0 || ingredients.length > 1 ? 's' : ''} To Shopping List</Button>
+                    <Button variant="outline-primary" style={{ margin: '15px' }} onClick={addAllIngredientsToList}>Add {ingredients.length === 0 ? 'All' : `${ingredients.length}`} Ingredient{ingredients.length === 0 || ingredients.length > 1 ? 's' : ''} To Shopping List</Button>
 
                 </div>
 

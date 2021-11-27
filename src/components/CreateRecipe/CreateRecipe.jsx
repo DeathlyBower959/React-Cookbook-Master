@@ -388,7 +388,7 @@ const CreateRecipe = ({ recipes, setRecipes, isCrushed }) => {
                                 <hr />
                                 <hr />
                                 <option value='tsp'>tsp</option>
-                                <option value='tbsp'>tbsp</option>
+                                <option value='Tbs'>tbsp</option>
                                 <option value='fl-oz'>fl-oz</option>
                                 <option value='cup'>cup</option>
                                 <option value='pnt'>pint</option>

@@ -18,7 +18,7 @@ const ItemTile = ({ item, addItem, deleteItem }) => {
             <div key={id} className="card" style={{ marginTop: "15px", borderRadius: '15px' }}>
                 <div className="row no-gutters">
                     <div className="col-sm-3" style={{ marginLeft: '10px', marginTop: '5px', marginBottom: '5px', paddingRight: '0px', maxWidth: '100px' }}>
-                        <img src={/*results[0]?.url ??*/ defaultImage} style={{ borderRadius: '10px' }} alt='Not found... :(' width='100%' />
+                        <img src={defaultImage} style={{ borderRadius: '10px' }} alt='Not found... :(' width='100%' />
                     </div>
                     <div className="col-sm-10" style={{ paddingLeft: '0px', paddingTop: '3px' }}>
                         <div className="card-body" style={{ paddingBottom: '0px' }}>
@@ -28,7 +28,7 @@ const ItemTile = ({ item, addItem, deleteItem }) => {
                             </div>
                             <div style={{ display: 'flex' }}>
                                 <img width='30px' style={{ cursor: 'pointer', margin: '0px 0px 0px 5px' }} src={plusLogo} onClick={() => addItem(1, name, unit)} alt='Not found... :(' />
-                                <img width='30px' style={{ cursor: 'pointer', margin: '0px 0px 0px 5px' }} src={evalFrac(amount) <= 0.1 ? deleteLogo : minusLogo} onClick={() => deleteItem(id)} alt='Not found... :(' />
+                                <img width='30px' style={{ cursor: 'pointer', margin: '0px 0px 0px 5px' }} src={evalFrac(amount) <= 1 ? deleteLogo : minusLogo} onClick={() => deleteItem(id)} alt='Not found... :(' />
                             </div>
                         </div>
                     </div>
